@@ -1,5 +1,6 @@
 /.idea
 /example/
 /node_modules/
+html/magic/*.*
 
 .DS_Store

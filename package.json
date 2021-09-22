@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "webpack",
+    "start": "webpack-dev-server --mode development  --hot --inline",
     "test": "mocha --require test/setup.js test/**/*.test.js"
   },
   "main": "dist/threesixty.js",
@@ -25,7 +26,8 @@
     "jsdom": "^15.2.1",
     "mocha": "^7.0.0",
     "webpack": "4.41.x",
-    "webpack-cli": "3.3.x"
+    "webpack-cli": "3.3.x",
+    "webpack-dev-server": "^3.3.1"
   },
   "keywords": [
     "360",

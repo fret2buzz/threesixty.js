@@ -136,7 +136,8 @@ class ThreeSixty {
       this.container.style.backgroundPositionX = -(this.#index % this.#options.perRow) * this.containerWidth + 'px';
       this.container.style.backgroundPositionY = -Math.floor(this.#index / this.#options.perRow) * this.containerHeight + 'px';
     } else {
-      this.container.style.backgroundImage = `url("${this.#options.image[this.#index]}")`;
+      // this.container.style.backgroundImage = `url("${this.#options.image[this.#index]}")`;
+      this.grid.style.transform = 'translateX(' + -(this.#index * this.containerWidth) + 'px)';
     }
   }
 
@@ -157,6 +158,25 @@ class ThreeSixty {
       const cols = this.#options.perRow;
       const rows = Math.ceil(this.#options.count / this.#options.perRow);
       this.container.style.backgroundSize = (cols * 100) + '% ' + (rows * 100) + '%';
+    } else {
+      var fragment = new DocumentFragment();
+      this.grid = document.createElement('div');
+      this.grid.className = "b-grid";
+      fragment.appendChild(this.grid);
+      this.#options.image.forEach(el => {
+        var image = document.createElement('div');
+        image.className = "b-image";
+        image.innerHTML = `<img src="${el}" loading="lazy" alt="" />`;
+        this.grid.appendChild(image);
+      });
+      this.container.appendChild(fragment);
+
+      const images = this.#options.image.map(this.preload);
+      Promise.all(images).then((eee) => {
+        console.log(eee, 'loaded');
+      }).catch(err => {
+        console.log(err);
+      });
     }
 
     if (this.isResponsive) {
@@ -164,6 +184,18 @@ class ThreeSixty {
     }
 
     this._update();
+  }
+
+  preload(src) {
+    return new Promise(function(resolve, reject) {
+      const img = new Image();
+      img.onload = function() {
+        console.log(src);
+        resolve(img);
+      }
+      img.onerror = reject;
+      img.src = src;
+    });
   }
 }
 
