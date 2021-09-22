@@ -9,6 +9,7 @@
   margin: 0 auto;
   background-size: cover;
   overflow: hidden;
+  position: relative;
   width: 100%;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -16,27 +17,37 @@
           user-select: none;
 }
 
-.b-grid {
+.threesixty-grid {
   font-size: 0;
   height: 100%;
   pointer-events: none;
   white-space: nowrap;
 }
 
-.b-image {
+.m-loading {
+  pointer-events: none;
+  background: #ccc;
+}
+
+.m-loading::after {
+  content: 'LOADING...';
+  font-size: 16px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 100;
+}
+
+.m-loading .threesixty-grid {
+  visibility: hidden;
+}
+
+.threesixty-image {
   display: inline-block;
   height: 100%;
   position: relative;
   vertical-align: top;
   width: 100%;
-}
-
-.b-image img {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top:  0;
 }
 
 .g-hub {

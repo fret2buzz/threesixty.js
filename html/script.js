@@ -76,7 +76,8 @@ var threesixty = new ThreeSixty(document.getElementById('threesixty'), {
   perRow: 4,
   speed: 100,
   prev: document.getElementById('prev'),
-  next: document.getElementById('next')
+  next: document.getElementById('next'),
+  inverted: true
 });
 
 // threesixty.play();

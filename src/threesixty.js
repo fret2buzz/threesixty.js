@@ -161,12 +161,15 @@ class ThreeSixty {
     } else {
       var fragment = new DocumentFragment();
       this.grid = document.createElement('div');
-      this.grid.className = "b-grid";
+      this.grid.className = 'threesixty-grid';
+      this.container.className = 'm-loading';
       fragment.appendChild(this.grid);
       this.#options.image.forEach(el => {
-        var image = document.createElement('div');
-        image.className = "b-image";
-        image.innerHTML = `<img src="${el}" loading="lazy" alt="" />`;
+        var image = document.createElement('img');
+        image.className = 'threesixty-image';
+        image.src = el;
+        image.setAttribute('loading', 'lazy');
+        image.setAttribute('alt', ' ');
         this.grid.appendChild(image);
       });
       this.container.appendChild(fragment);
@@ -174,6 +177,7 @@ class ThreeSixty {
       const images = this.#options.image.map(this.preload);
       Promise.all(images).then((eee) => {
         console.log(eee, 'loaded');
+        this.container.className = '';
       }).catch(err => {
         console.log(err);
       });
