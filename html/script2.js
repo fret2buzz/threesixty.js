@@ -1,5 +1,7 @@
+// var host = 'https://vr201-c9912.firebaseapp.com/';
+var host = '';
 var threesixty = new ThreeSixty(document.getElementById('threesixty'), {
-  image: 'magic/montage-mozjpeg.jpg',
+  image: host + 'images/montage-mozjpeg.jpg',
   aspectRatio: 1,
   count: 35,
   perRow: 4,

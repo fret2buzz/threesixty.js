@@ -113,10 +113,7 @@ class ThreeSixty {
 
     this.container.style.width = '';
     this.container.style.height = '';
-    this.container.style.backgroundImage = '';
-    this.container.style.backgroundPositionX = '';
-    this.container.style.backgroundPositionY = '';
-    this.container.style.backgroundSize = '';
+    this.grid.remove();
 
     if (this.isResponsive) {
       window.removeEventListener('resize', this._windowResizeListener);
@@ -133,22 +130,31 @@ class ThreeSixty {
 
   _update () {
     if (this.sprite) {
-      this.container.style.backgroundPositionX = -(this.#index % this.#options.perRow) * this.containerWidth + 'px';
-      this.container.style.backgroundPositionY = -Math.floor(this.#index / this.#options.perRow) * this.containerHeight + 'px';
+      var posX = -(this.#index % this.#options.perRow) * this.containerWidth + 'px';
+      var posY = -Math.floor(this.#index / this.#options.perRow) * this.containerHeight + 'px';
+      this.grid.style.transform = 'translate('+ posX + ', ' + posY +')';
     } else {
-      // this.container.style.backgroundImage = `url("${this.#options.image[this.#index]}")`;
       this.grid.style.transform = 'translateX(' + -(this.#index * this.containerWidth) + 'px)';
     }
   }
 
   _windowResizeListener() {
-    this.container.className = 'm-loading';
+    this.container.classList.add('m-loading');
     clearTimeout(this.resizeTimer);
     this.resizeTimer = setTimeout(() => {
         this.container.style.height = this.containerHeight + 'px';
         this._update()
-        this.container.className = '';
+        this.container.classList.remove('m-loading');
     }, 250);
+  }
+
+  _appendImage(el) {
+      var image = document.createElement('img');
+      image.className = 'threesixty-image';
+      image.src = el;
+      image.setAttribute('loading', 'lazy');
+      image.setAttribute('alt', ' ');
+      this.grid.appendChild(image);
   }
 
   _initContainer() {
@@ -157,36 +163,28 @@ class ThreeSixty {
     }
     this.container.style.height = this.containerHeight + 'px';
 
-    if (this.sprite) {
-      this.container.style.backgroundImage = `url("${this.#options.image}")`;
+    var fragment = new DocumentFragment();
+    this.grid = document.createElement('div');
+    this.grid.className = 'threesixty-grid';
+    this.container.classList.add('m-loading');
+    fragment.appendChild(this.grid);
 
+    if (this.sprite) {
+      this._appendImage(this.#options.image);
       const cols = this.#options.perRow;
       const rows = Math.ceil(this.#options.count / this.#options.perRow);
-      this.container.style.backgroundSize = (cols * 100) + '% ' + (rows * 100) + '%';
+      this.grid.style.width = (cols * 100) + '%';
+      this.grid.style.height = (rows * 100) + '%';
+      this._preloadAll([this.#options.image]);
     } else {
-      var fragment = new DocumentFragment();
-      this.grid = document.createElement('div');
-      this.grid.className = 'threesixty-grid';
-      this.container.className = 'm-loading';
-      fragment.appendChild(this.grid);
       this.#options.image.forEach(el => {
-        var image = document.createElement('img');
-        image.className = 'threesixty-image';
-        image.src = el;
-        image.setAttribute('loading', 'lazy');
-        image.setAttribute('alt', ' ');
-        this.grid.appendChild(image);
+        this._appendImage(el);
       });
-      this.container.appendChild(fragment);
 
-      const images = this.#options.image.map(this.preload);
-      Promise.all(images).then((eee) => {
-        console.log(eee, 'loaded');
-        this.container.className = '';
-      }).catch(err => {
-        console.log(err);
-      });
+      this._preloadAll(this.#options.image);
     }
+
+    this.container.appendChild(fragment);
 
     if (this.isResponsive) {
       window.addEventListener('resize', this._windowResizeListener);
@@ -195,7 +193,14 @@ class ThreeSixty {
     this._update();
   }
 
-  preload(src) {
+  _preloadAll(list) {
+    const images = list.map(this._preload);
+    Promise.all(images).then(() => {
+      this.container.classList.remove('m-loading');
+    });
+  }
+
+  _preload(src) {
     return new Promise(function(resolve, reject) {
       const img = new Image();
       img.onload = function() {
