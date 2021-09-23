@@ -72,8 +72,6 @@ var threesixty = new ThreeSixty(document.getElementById('threesixty'), {
     'magic/magic_70.jpg'
   ],
   aspectRatio: 1,
-  count: 31,
-  perRow: 4,
   speed: 100,
   prev: document.getElementById('prev'),
   next: document.getElementById('next'),

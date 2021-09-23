@@ -142,8 +142,13 @@ class ThreeSixty {
   }
 
   _windowResizeListener() {
-    this.container.style.height = this.containerHeight + 'px';
-    this._update()
+    this.container.className = 'm-loading';
+    clearTimeout(this.resizeTimer);
+    this.resizeTimer = setTimeout(() => {
+        this.container.style.height = this.containerHeight + 'px';
+        this._update()
+        this.container.className = '';
+    }, 250);
   }
 
   _initContainer() {
